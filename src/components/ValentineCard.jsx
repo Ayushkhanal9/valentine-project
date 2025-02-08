@@ -73,8 +73,8 @@ const ValentineCard = () => {
           </ul>
 
           <div className="images-section">
-            <img src="/pic1.jpg" alt="Our memories together" />
-            <img src="/pic2.jpeg" alt="More sweet memories" />
+            <img src="/pic1.jpg" alt="pic 1" />
+            <img src="/pic2.jpeg" alt="pic 2" />
           </div>
         </div>
       )}

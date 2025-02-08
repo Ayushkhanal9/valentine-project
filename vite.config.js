@@ -8,5 +8,13 @@ export default defineConfig({
     headers: {
       'Content-Security-Policy': "script-src 'self' 'unsafe-inline' 'unsafe-eval';"
     }
+  },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 });
