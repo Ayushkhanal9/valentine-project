@@ -10,9 +10,13 @@ body {
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   margin: auto;
+  padding: 20px; 
+  box-sizing: border-box;
+  overflow: auto; 
 }
+
 
 .card-front {
   background: white;
@@ -43,6 +47,8 @@ body {
   width: 100%;
   animation: fadeIn 0.5s ease-out;
   margin: 0 auto;
+  max-height: 90vh; /* Prevents the card from being too large */
+  overflow-y: auto; /* Enables scrolling if content overflows */
 }
 
 @keyframes fadeIn {
