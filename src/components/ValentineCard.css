@@ -6,15 +6,12 @@ body {
 }
 
 .card-container {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
 }
 
 .card-front {
@@ -28,7 +25,10 @@ body {
   text-align: center;
   cursor: pointer;
 }
-
+.card-content p,
+.card-content li {
+  color: black !important;
+}
 .card-front:hover {
   transform: translateY(-10px);
   box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);

@@ -9,50 +9,53 @@ const ValentineCard = () => {
   
   useEffect(() => {
     if (isOpen) {
-      // Load SoundCloud Widget API
-      const script = document.createElement("script");
-      script.src = "https://w.soundcloud.com/player/api.js";
-      script.async = true;
-      document.body.appendChild(script);
+      // Check if the SoundCloud API script is already loaded
+      if (!window.SC) {
+        const script = document.createElement("script");
+        script.src = "https://w.soundcloud.com/player/api.js";
+        script.async = true;
+        script.onload = () => {
+          initializePlayer();
+        };
+        document.body.appendChild(script);
+      } else {
+        initializePlayer();
+      }
+    }
+    
+    function initializePlayer() {
+      const iframe = document.createElement('iframe');
+      iframe.width = "100%";
+      iframe.height = "166";
+      iframe.allow = "autoplay";
+      iframe.src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1674168964&auto_play=true&show_artwork=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false";
   
-      script.onload = () => {
-        const iframe = document.createElement('iframe');
-        iframe.width = "100%";
-        iframe.height = "166";
-        iframe.allow = "autoplay";
-        // Added allow="autoplay" and updated URL parameters
-        iframe.src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1674168964&auto_play=true&show_artwork=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false";
+      // Hide iframe but allow sound
+      iframe.style.opacity = "0.01";
+      iframe.style.position = "fixed";
+      iframe.style.bottom = "0";
+      iframe.style.left = "0";
+  
+      const playerContainer = document.getElementById('soundcloud-player');
+      if (playerContainer) {
+        playerContainer.innerHTML = ''; 
+        playerContainer.appendChild(iframe);
         
-        // Make the player invisible but keep it functional
-        iframe.style.opacity = "0.01";
-        iframe.style.position = "fixed";
-        iframe.style.bottom = "0";
-        iframe.style.left = "0";
-        
-        const playerContainer = document.getElementById('soundcloud-player');
-        if (playerContainer) {
-          playerContainer.innerHTML = ''; // Clear any existing content
-          playerContainer.appendChild(iframe);
-        }
-  
-        // Initialize the SoundCloud Widget API
-        window.SC.Widget(iframe).bind(SC.Widget.Events.READY, () => {
-          window.SC.Widget(iframe).play();
-        });
-      };
-  
-      return () => {
-        const playerContainer = document.getElementById('soundcloud-player');
-        if (playerContainer) {
-          playerContainer.innerHTML = '';
-        }
-        const scriptElement = document.querySelector(`script[src="${script.src}"]`);
-        if (scriptElement) {
-          scriptElement.remove();
-        }
-      };
+        iframe.onload = () => {
+          setTimeout(() => {
+            if (window.SC) {
+              const widget = window.SC.Widget(iframe);
+              widget.play();
+            } else {
+              console.error("SoundCloud Widget API failed to load");
+            }
+          }, 500);
+        };
+      }
     }
   }, [isOpen]);
+  
+
   const itinerary = [
     { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
     { time: "8:00 PM", activity: "Passionate pillow fight 😈" },
