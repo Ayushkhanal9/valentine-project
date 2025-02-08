@@ -42,7 +42,7 @@ const ValentineCard = () => {
   const itinerary = [
     { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
     { time: "8:00 PM", activity: "Passionate pillow fight 😈" },
-    { time: "8:02 PM", activity: "Wine and relax 🌳" },
+    { time: "8:02 PM", activity: "Wine and relax 🍷" },
     { time: "next morning 10:00 AM", activity: "Breakfast by the chef(Me) ☕" },
   ];
 
