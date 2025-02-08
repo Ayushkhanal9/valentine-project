@@ -7,26 +7,27 @@ const ValentineCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [musicStarted, setMusicStarted] = useState(false);
+  const [widget, setWidget] = useState(null);
 
   useEffect(() => {
-    // Check if user is on a mobile device
-    const checkMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-    };
-    checkMobile();
-
-    if (isOpen && !isMobile) {
-      startMusic();
+    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    if (!window.SC) {
+      const script = document.createElement("script");
+      script.src = "https://w.soundcloud.com/player/api.js";
+      script.async = true;
+      script.onload = initializePlayer;
+      document.body.appendChild(script);
+    } else {
+      initializePlayer();
     }
-  }, [isOpen]);
+  }, []);
 
-  const startMusic = () => {
+  const initializePlayer = () => {
     const iframe = document.createElement('iframe');
     iframe.width = "100%";
     iframe.height = "166";
     iframe.allow = "autoplay";
-    iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=true";
-
+    iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=false"; 
     iframe.style.opacity = "0.01";
     iframe.style.position = "fixed";
     iframe.style.bottom = "0";
@@ -38,22 +39,31 @@ const ValentineCard = () => {
       playerContainer.appendChild(iframe);
 
       iframe.onload = () => {
-        setTimeout(() => {
-          try {
-            const widget = window.SC.Widget(iframe);
-            widget.play();
-          } catch (error) {
-            console.error("SoundCloud Widget API failed to load:", error);
-          }
-        }, 500);
+        try {
+          const scWidget = window.SC.Widget(iframe);
+          setWidget(scWidget);
+          console.log("✅ SoundCloud Widget Loaded");
+        } catch (error) {
+          console.error("❌ SoundCloud Widget API failed to load:", error);
+        }
       };
+    }
+  };
+
+  const startMusic = () => {
+    if (widget) {
+      widget.play();
+      setMusicStarted(true);
+      console.log("🎶 Music started!");
+    } else {
+      console.error("❌ Widget not found!");
     }
   };
 
   return (
     <div className="card-container">
       <div id="soundcloud-player"></div>
-      
+
       {!isOpen ? (
         <div className="card-front" onClick={() => setIsOpen(true)}>
           <h2>❤️</h2>
@@ -67,13 +77,10 @@ const ValentineCard = () => {
           <p style={{ fontSize: '1.2em', lineHeight: '1.6', color: '#555' }}>
             You are the sweetest part of my life, and I can't wait to spend this special day with you!
           </p>
-          
+
           {isMobile && !musicStarted && (
             <button 
-              onClick={() => {
-                startMusic();
-                setMusicStarted(true);
-              }} 
+              onClick={startMusic} 
               style={{
                 display: 'block', 
                 margin: '20px auto', 
