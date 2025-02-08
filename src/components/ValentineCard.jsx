@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './ValentineCard.css';
-// Update the paths based on your file structure - since your component is in src/components
 import pic1 from '../assets/pic1.jpg';  
 import pic2 from '../assets/pic2.jpeg';
 
@@ -9,52 +8,36 @@ const ValentineCard = () => {
   
   useEffect(() => {
     if (isOpen) {
-      // Check if the SoundCloud API script is already loaded
-      if (!window.SC) {
-        const script = document.createElement("script");
-        script.src = "https://w.soundcloud.com/player/api.js";
-        script.async = true;
-        script.onload = () => {
-          initializePlayer();
-        };
-        document.body.appendChild(script);
-      } else {
-        initializePlayer();
-      }
-    }
-    
-    function initializePlayer() {
       const iframe = document.createElement('iframe');
       iframe.width = "100%";
       iframe.height = "166";
       iframe.allow = "autoplay";
-      iframe.src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1674168964&auto_play=true&show_artwork=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false";
-  
+      iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=true";
+
       // Hide iframe but allow sound
       iframe.style.opacity = "0.01";
       iframe.style.position = "fixed";
       iframe.style.bottom = "0";
       iframe.style.left = "0";
-  
+
       const playerContainer = document.getElementById('soundcloud-player');
       if (playerContainer) {
         playerContainer.innerHTML = ''; 
         playerContainer.appendChild(iframe);
-        
+
         iframe.onload = () => {
           setTimeout(() => {
-            if (window.SC) {
+            try {
               const widget = window.SC.Widget(iframe);
               widget.play();
-            } else {
-              console.error("SoundCloud Widget API failed to load");
+            } catch (error) {
+              console.error("SoundCloud Widget API failed to load:", error);
             }
           }, 500);
         };
       }
     }
   }, [isOpen]);
-  
 
   const itinerary = [
     { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
