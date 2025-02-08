@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ValentineCard.css';
+// Update the paths based on your file structure - since your component is in src/components
+import pic1 from '../assets/pic1.jpg';  
+import pic2 from '../assets/pic2.jpeg';
 
 const ValentineCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,32 +14,45 @@ const ValentineCard = () => {
       script.src = "https://w.soundcloud.com/player/api.js";
       script.async = true;
       document.body.appendChild(script);
-
+  
       script.onload = () => {
         const iframe = document.createElement('iframe');
         iframe.width = "100%";
         iframe.height = "166";
         iframe.allow = "autoplay";
-        iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=true&show_artwork=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false";
+        // Added allow="autoplay" and updated URL parameters
+        iframe.src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1674168964&auto_play=true&show_artwork=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false";
         
-        // Style to hide the player but keep it functional
-        iframe.style.position = 'absolute';
-        iframe.style.left = '-9999px';
-        iframe.style.visibility = 'hidden';
+        // Make the player invisible but keep it functional
+        iframe.style.opacity = "0.01";
+        iframe.style.position = "fixed";
+        iframe.style.bottom = "0";
+        iframe.style.left = "0";
         
-        document.getElementById('soundcloud-player').appendChild(iframe);
+        const playerContainer = document.getElementById('soundcloud-player');
+        if (playerContainer) {
+          playerContainer.innerHTML = ''; // Clear any existing content
+          playerContainer.appendChild(iframe);
+        }
+  
+        // Initialize the SoundCloud Widget API
+        window.SC.Widget(iframe).bind(SC.Widget.Events.READY, () => {
+          window.SC.Widget(iframe).play();
+        });
       };
-
+  
       return () => {
         const playerContainer = document.getElementById('soundcloud-player');
         if (playerContainer) {
           playerContainer.innerHTML = '';
         }
-        document.body.removeChild(script);
+        const scriptElement = document.querySelector(`script[src="${script.src}"]`);
+        if (scriptElement) {
+          scriptElement.remove();
+        }
       };
     }
   }, [isOpen]);
-
   const itinerary = [
     { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
     { time: "8:00 PM", activity: "Passionate pillow fight 😈" },
@@ -73,8 +89,8 @@ const ValentineCard = () => {
           </ul>
 
           <div className="images-section">
-            <img src="/pic1.jpg" alt="pic 1" />
-            <img src="/pic2.jpeg" alt="pic 2" />
+            <img src={pic1} alt="pic 1" />
+            <img src={pic2} alt="pic 2" />
           </div>
         </div>
       )}
