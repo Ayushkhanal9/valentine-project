@@ -5,65 +5,50 @@ import pic2 from '../assets/pic2.jpeg';
 
 const ValentineCard = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [musicStarted, setMusicStarted] = useState(false);
-  const [widget, setWidget] = useState(null);
-
+  
   useEffect(() => {
-    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-    if (!window.SC) {
-      const script = document.createElement("script");
-      script.src = "https://w.soundcloud.com/player/api.js";
-      script.async = true;
-      script.onload = initializePlayer;
-      document.body.appendChild(script);
-    } else {
-      initializePlayer();
+    if (isOpen) {
+      const iframe = document.createElement('iframe');
+      iframe.width = "100%";
+      iframe.height = "166";
+      iframe.allow = "autoplay";
+      iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=true";
+
+      // Hide iframe but allow sound
+      iframe.style.opacity = "0.01";
+      iframe.style.position = "fixed";
+      iframe.style.bottom = "0";
+      iframe.style.left = "0";
+
+      const playerContainer = document.getElementById('soundcloud-player');
+      if (playerContainer) {
+        playerContainer.innerHTML = ''; 
+        playerContainer.appendChild(iframe);
+
+        iframe.onload = () => {
+          setTimeout(() => {
+            try {
+              const widget = window.SC.Widget(iframe);
+              widget.play();
+            } catch (error) {
+              console.error("SoundCloud Widget API failed to load:", error);
+            }
+          }, 500);
+        };
+      }
     }
-  }, []);
+  }, [isOpen]);
 
-  const initializePlayer = () => {
-    const iframe = document.createElement('iframe');
-    iframe.width = "100%";
-    iframe.height = "166";
-    iframe.allow = "autoplay";
-    iframe.src = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/rexorangecounty/rain-man&auto_play=false"; 
-    iframe.style.opacity = "0.01";
-    iframe.style.position = "fixed";
-    iframe.style.bottom = "0";
-    iframe.style.left = "0";
-
-    const playerContainer = document.getElementById('soundcloud-player');
-    if (playerContainer) {
-      playerContainer.innerHTML = ''; 
-      playerContainer.appendChild(iframe);
-
-      iframe.onload = () => {
-        try {
-          const scWidget = window.SC.Widget(iframe);
-          setWidget(scWidget);
-          console.log("✅ SoundCloud Widget Loaded");
-        } catch (error) {
-          console.error("❌ SoundCloud Widget API failed to load:", error);
-        }
-      };
-    }
-  };
-
-  const startMusic = () => {
-    if (widget) {
-      widget.play();
-      setMusicStarted(true);
-      console.log("🎶 Music started!");
-    } else {
-      console.error("❌ Widget not found!");
-    }
-  };
+  const itinerary = [
+    { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
+    { time: "8:00 PM", activity: "Passionate pillow fight 😈" },
+    { time: "8:02 PM", activity: "Wine and relax 🌳" },
+    { time: "next morning 10:00 AM", activity: "Breakfast by the chef(Me) ☕" },
+  ];
 
   return (
     <div className="card-container">
       <div id="soundcloud-player"></div>
-
       {!isOpen ? (
         <div className="card-front" onClick={() => setIsOpen(true)}>
           <h2>❤️</h2>
@@ -77,34 +62,10 @@ const ValentineCard = () => {
           <p style={{ fontSize: '1.2em', lineHeight: '1.6', color: '#555' }}>
             You are the sweetest part of my life, and I can't wait to spend this special day with you!
           </p>
-
-          {isMobile && !musicStarted && (
-            <button 
-              onClick={startMusic} 
-              style={{
-                display: 'block', 
-                margin: '20px auto', 
-                padding: '10px 20px', 
-                fontSize: '1.2em', 
-                color: 'white', 
-                background: '#ff69b4', 
-                border: 'none', 
-                borderRadius: '10px', 
-                cursor: 'pointer'
-              }}
-            >
-              Tap to Start Music 🎶
-            </button>
-          )}
-
+          
           <h3>Our Special Day Together 💝</h3>
           <ul>
-            {[
-              { time: "6:30 PM", activity: "Romantic dinner 🕯️" },
-              { time: "8:00 PM", activity: "Passionate pillow fight 😈" },
-              { time: "8:02 PM", activity: "Wine and relax 🌳" },
-              { time: "next morning 10:00 AM", activity: "Breakfast by the chef(Me) ☕" }
-            ].map((item, index) => (
+            {itinerary.map((item, index) => (
               <li key={index}>
                 <strong style={{ color: '#ff1493' }}>{item.time}</strong>
                 <br />
